@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/public/jquery-3.6.0.min.js"></script>
+    <script src="/public/common_function.js"></script>
+    <!-- <script src="/public/service_worker.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="/public/style.css">
+    <title>Node.js登入實作頁面</title>
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+
+<body class="loginBody">
+    <div class="loginBg">
+        <div class="loginTitle">Shine Node.js登入實作頁面</div>
+        <div class="loginBox">
+            <h2>登入</h2>
+            <label for="account">帳號</label><input type="text" id="account" maxlength="30"><br />
+            <label for="password">密碼</label><input type="password" id="password" maxlength="30"><br />
+            <div class="alertMsg" id="error"></div>
+            <input type="button" class="button width_50pc" value="登入" onclick="login();" />
+            <hr>
+            <input type="button" class="button width_50pc" value="註冊" onclick="gotohref('/register');" />
+        </div>
+    </div>
+    </div>
+    <script>
+        function gotohref(path) {
+            location.href = path;
+        }
+
+        // 登入
+        function login() {
+            let account = document.getElementById("account").value;
+            let password = document.getElementById("password").value;
+            let obj = {
+                account: account,
+                password: password
+            };
+            let result = call_api('/api/login', obj);
+            if (result['status']) {
+                localStorage.setItem('token', result['data']['token']);
+                localStorage.setItem('userInfo', JSON.stringify(result['data']));
+                gotohref('./remind');
+            } else {
+                document.getElementById("error").innerHTML = result['msg'];
+            }
+        }
+    </script>
+</body>
+
+</html>

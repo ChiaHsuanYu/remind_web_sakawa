@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/public/jquery-3.6.0.min.js"></script>
+    <script src="/public/common_function.js"></script>
+    <link rel="stylesheet" type="text/css" href="/public/style.css">
+    <title>Shine Node.js登入實作頁面</title>
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+
+<body class="loginBody">
+    <div class="loginBg">
+        <div class="loginTitle">Shine Node.js登入實作頁面</div>
+        <div class="loginBox">
+            <h2>註冊</h2>
+            <label class="label">帳號</label><input type="text" id="account" maxlength="30"><br />
+            <label class="label">密碼</label><input type="password" id="password" maxlength="30"><br />
+            <label class="label">確認密碼</label><input type="password" id="check_password" maxlength="30"><br />
+            <div class="alertMsg" id="error"></div>
+            <input type="button" class="button width_50pc" value="註冊" onclick="register();" />
+            <hr>
+            <input type="button" class="button width_50pc" value="登入" onclick="gotohref('/login');" />
+        </div>
+    </div>
+    </div>
+    <script>
+        // 註冊
+        function register() {
+            let account = document.getElementById("account").value;
+            let password = document.getElementById("password").value;
+            let check_password = document.getElementById("check_password").value;
+            let obj = {
+                account: account,
+                password: password,
+                check_password: check_password
+            };
+            let result = call_api('/api/register', obj);
+            if (result['status']) {
+                document.getElementById("error").innerHTML = result['msg'];
+                sleep(1000).then(() => {
+                    gotohref('./login');
+                })
+            } else {
+                document.getElementById("error").innerHTML = result['msg'];
+            }
+
+        }
+    </script>
+</body>
+
+</html>

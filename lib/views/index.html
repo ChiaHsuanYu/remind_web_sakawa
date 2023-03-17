@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="/public/style.css">
+
+    <script src="/public/jquery-3.6.0.min.js"></script>
+
+    <!-- tempusdominus-bootstrap-4 套件 -->
+    <script src="/public/tempusdominus-bootstrap-4/moment.min.js"></script>
+    <script src="/public/tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/public/tempusdominus-bootstrap-4/build/css/tempusdominus-bootstrap-4.min.css">
+    <link rel="stylesheet" type="text/css" href="/public/fontawesome-free-5.15.4-web/css/all.css">
+    <title>Node.js登入實作頁面</title>
+</head>
+
+<body>
+    <!-- 修改小視窗 -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="edit_name" aria-hidden="true">
+        <input type="hidden" id="edit_id">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="edit_title">提醒事件名稱</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="margin_bottom_5">
+                        <label>事件名稱：</label><input id="edit_name"><br>
+                    </div>
+                    <div class="margin_bottom_5">
+                        <label>提醒時間：</label>
+                        <div class="inline_block">
+                            <div class="form-group">
+                                <div class="input-group" id="datetimepicker1" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input datetime" data-target="#datetimepicker1" id="edit_time" value="" />
+                                    <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <script type="text/javascript">
+                            $(function() {
+                                $('#datetimepicker1').datetimepicker({
+                                    format: 'LT',
+                                    format: 'YYYY-MM-DD HH:mm'
+                                });
+                            });
+                        </script>
+                    </div>
+                    <div class="desc_box">
+                        <label class="edit_desc_label">提醒事項：</label><textarea class="edit_desc" id="edit_desc"></textarea><br>
+                    </div>
+                </div>
+                <div class="btn_box">
+                    <div class="alertMsg" id="edit_error"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="cancel_remind()">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="edit_remind()">送出</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 主頁內容 -->
+    <div class="content">
+        <button class="button logout" onclick="logout()">登出</button>
+        <div class="form_box">
+            <h3 class="title">提醒設定</h3>
+            <div class="form">
+                <!-- <label>點擊次數：</label>
+                    <p style="display: inline-block;" id="count"></p>
+                    <button class="button" id="btn">Click</button> -->
+                <br>
+                <label>事件名稱：</label><input name="time" id="name">
+                <label>提醒時間：</label>
+
+                <div class="inline_block">
+                    <div class="form-group">
+                        <div class="input-group" id="datetimepicker2" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input datetime" data-target="#datetimepicker2" id="time" value="" />
+                            <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    $(function() {
+                        $('#datetimepicker2').datetimepicker({
+                            format: 'LT',
+                            format: 'YYYY-MM-DD HH:mm'
+                        });
+                    });
+                </script>
+                <div class="desc_box">
+                    <label class="desc_label">提醒事項：</label><textarea class="desc" name="desc" id="desc"></textarea><br>
+                </div>
+                <div class="btn_box">
+                    <div class="alertMsg" id="error"></div>
+                    <button class="button" onclick='add_form();'>預約</button>
+                </div>
+            </div>
+            <div class="ceContent margin_top_10px">
+                <!-- 主題維護  -->
+                <div class="padding_5" id="remindAll"></div>
+                <div class="btn_box">
+                    <div class="alertMsg" id="page_status"></div>
+                </div>
+                <!-- 資料總筆數  -->
+                <div class="paginationBox">
+                    <div class="totalCount" id="total_count"></div>
+                    <div class="pagination" id="allPageCountBox">
+                        <!-- 筆數頁數  -->
+                        <div>
+                            每頁：<select id="list_page_count" name="page_count"></select> 筆
+                            <button class="pageBtn" id="last_page" onclick="remind_last_page('list_page','list_page_count');"> ←上頁 </button> 第 <select id="list_page" name="page"></select> 頁
+                            <button class="pageBtn" id="next_page" onclick="remind_next_page('list_page','list_page_count');"> 下頁→ </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js" integrity="sha384-lpyLfhYuitXl2zRZ5Bn2fqnhNAKOAaM/0Kr9laMspuaMiZfGmfwRNFh8HlMy49eQ" crossorigin="anonymous"></script>
+    <script src="/public/common_function.js"></script>
+    <script src="/public/remind.js"></script>
+    <script>
+        query_data(1, 10);
+
+        //分頁-筆數函數 當筆數發生變化時觸發事件
+        $('#list_page_count').change(function() {
+            document.getElementById("page_status").innerHTML = '';
+            let page_count = document.getElementById('list_page_count').value;
+            query_data(1, page_count);
+        });
+        //分頁-頁數函數 當頁數發生變化時觸發事件
+        $('#list_page').change(function() {
+            document.getElementById("page_status").innerHTML = '';
+            let page = document.getElementById('list_page').value;
+            let page_count = document.getElementById('list_page_count').value;
+            query_data(page, page_count);
+        });
+    </script>
+</body>
+
+</html>

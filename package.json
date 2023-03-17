@@ -1,0 +1,37 @@
+{
+    "name": "package",
+    "version": "1.0.0",
+    "description": "Node.js on Docker",
+    "main": "test.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon login.js --ignore 'public/*.js'"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "body-parser": "^1.20.0",
+        "config": "^3.3.7",
+        "cookie-parser": "^1.4.6",
+        "dotenv": "^16.0.1",
+        "ejs": "^3.1.8",
+        "express": "^4.18.1",
+        "express-handlebars": "^6.0.6",
+        "express-session": "^1.17.3",
+        "express-validator": "^6.14.2",
+        "forever": "^4.0.3",
+        "jsonwebtoken": "^8.5.1",
+        "md5": "^2.3.0",
+        "morgan": "^1.10.0",
+        "mysql": "^2.18.1",
+        "node-schedule": "^2.1.0",
+        "sakawa-core": "git+ssh://git_reader@192.168.20.200:/opt/git_repos/sakawa-core.git#0.0.14",
+        "sass": "^1.55.0",
+        "socket.io": "^4.5.1",
+        "socket.io-client": "^4.5.1",
+        "xss": "^1.0.13"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.18"
+    }
+}
